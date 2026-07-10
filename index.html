@@ -1126,6 +1126,67 @@
       .products{grid-template-columns:1fr}
       .product-title{min-height:auto}
     }
+    @media (max-width:560px){
+      .topline{display:none}
+      .header{box-shadow:0 6px 18px rgba(17,18,19,.08)}
+      .mobile-collections{display:none}
+      .nav{height:56px}
+      .brand{font-size:19px}
+      .hero{border-bottom:0;background:var(--white)}
+      .hero-copy{padding:18px 14px 16px}
+      .hero-kicker{gap:6px}
+      .hero-kicker .pill{font-size:10px;min-height:27px;padding:6px 9px}
+      h1{font-size:34px;line-height:.98;margin:15px 0 9px;max-width:360px}
+      .hero-text{font-size:13px;line-height:1.5}
+      .hero-actions{grid-template-columns:1fr 1fr;gap:8px;margin-top:15px}
+      .hero-actions .btn{min-height:43px;padding:10px 9px;font-size:10px}
+      .hero-stats,.hero-media{display:none}
+      .layout{padding:14px 10px 42px;gap:16px}
+      .sidebar{gap:0}
+      .sidebar .side-block:not(:first-child){display:none}
+      .side-block{border-radius:10px}
+      .section-head{gap:8px;margin-bottom:14px}
+      .section-head h2{font-size:25px}
+      .section-head p{display:none}
+      .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+      .product{border-radius:8px}
+      .product-image{padding:10px}
+      .product-body{padding:10px;gap:7px}
+      .product-title{font-size:12px;line-height:1.24;min-height:44px}
+      .vendor{font-size:9px}
+      .chips{gap:4px;min-height:22px}
+      .chip{font-size:8px;padding:4px 5px}
+      .product-link{display:none}
+      .product-bottom{align-items:end}
+      .price{font-size:13px;line-height:1.15}
+      .old{font-size:10px}
+      .quick{width:34px;height:34px}
+      .badge-row{left:7px;right:7px;top:7px}
+      .badge{font-size:8px;min-height:21px;padding:3px 6px}
+      .route-page{padding:14px 10px 42px}
+      .route-hero{padding:16px;margin-bottom:14px}
+      .route-hero h1{font-size:32px;line-height:1;margin:10px 0 8px}
+      .route-hero p{font-size:13px;line-height:1.5}
+      .collection-toolbar{font-size:11px;margin-bottom:12px}
+      .product-page-full{gap:14px}
+      .product-gallery{padding:14px;border-radius:10px}
+      .product-buybox{padding:14px;border-radius:10px}
+      .product-buybox h1{font-size:29px}
+      .sizes{gap:6px;margin:13px 0}
+      .size{font-size:11px;padding:8px 10px}
+      .details-grid{gap:10px;margin-top:14px}
+      .detail-card,.review-card,.legal-card{padding:14px}
+      .product-reviews{margin-top:24px}
+      .reviews-list{grid-template-columns:1fr}
+      .menu-panel{width:88vw}
+      .menu-link{min-height:44px}
+      .menu-actions{position:sticky;bottom:0;background:var(--paper)}
+    }
+    @media (max-width:340px){
+      .products{grid-template-columns:1fr}
+      .product-title{min-height:auto;font-size:15px}
+      .product-link{display:inline-flex}
+    }
   </style>
 </head>
 <body>

@@ -1032,7 +1032,18 @@
       padding:9px 11px;
       font-size:12px;
       font-weight:900;
+      cursor:pointer;
     }
+    .size.active{background:var(--ink);border-color:var(--ink);color:var(--white)}
+    .variant-error{
+      display:none;
+      margin:-8px 0 14px;
+      color:var(--red);
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+    .variant-error.show{display:block}
     .close-btn{
       border:0;
       background:transparent;
@@ -1513,6 +1524,7 @@
         <p class="hero-text" id="modalText"></p>
         <div class="price" id="modalPrice"></div>
         <div class="sizes" id="modalSizes"></div>
+        <p class="variant-error" data-variant-error>Choisis une taille avant d'ajouter au panier.</p>
         <button class="btn primary full" id="modalAdd"><i data-lucide="shopping-bag"></i> Ajouter au panier</button>
       </div>
     </article>
@@ -1621,6 +1633,7 @@
 
     let activeFilter = "ALL";
     let activeProduct = null;
+    let selectedSize = "";
     const cart = [];
 
     function formatPrice(value){
@@ -1632,6 +1645,33 @@
       if(product.tags.includes("FEMME")) return "Femme";
       if(product.tags.includes("HOMME")) return "Homme";
       return "Unisexe";
+    }
+
+    function needsSize(product){
+      return product.sizes && product.sizes.length > 1;
+    }
+
+    function getSelectedSize(scope=document){
+      return scope.querySelector(".size.active")?.dataset.size || "";
+    }
+
+    function selectSize(button){
+      const group = button.closest(".sizes");
+      group.querySelectorAll(".size").forEach(size => size.classList.remove("active"));
+      button.classList.add("active");
+      selectedSize = button.dataset.size;
+      const error = group.parentElement.querySelector("[data-variant-error]");
+      if(error) error.classList.remove("show");
+    }
+
+    function addProductToCart(product, size, scope=document){
+      if(needsSize(product) && !size){
+        const error = scope.querySelector("[data-variant-error]");
+        if(error) error.classList.add("show");
+        return false;
+      }
+      addToCart(product, size);
+      return true;
     }
 
     function refreshIcons(){
@@ -1752,7 +1792,8 @@
               <span class="vendor">${product.vendor} · ${product.type}</span>
               <p class="hero-text" style="margin-top:16px">${product.text}</p>
               <div class="price" style="font-size:28px;margin-top:18px">${formatPrice(product.price)} ${product.compare ? `<span class="old">${formatPrice(product.compare)}</span>` : ""}</div>
-              <div class="sizes" aria-label="Tailles disponibles">${product.sizes.map(size => `<span class="size">${size}</span>`).join("")}</div>
+              <div class="sizes" aria-label="Tailles disponibles">${product.sizes.map(size => `<button class="size" data-size="${size}" type="button">${size}</button>`).join("")}</div>
+              <p class="variant-error" data-variant-error>Choisis une taille avant d'ajouter au panier.</p>
               <div class="buy-actions">
                 <button class="btn primary" data-add-product="${product.id}"><i data-lucide="shopping-bag"></i> Ajouter au panier</button>
                 <button class="btn"><i data-lucide="heart"></i> Wishlist</button>
@@ -1897,7 +1938,8 @@
       els.modalBadge.textContent = productBadge(activeProduct);
       els.modalBadge.className = `badge ${activeProduct.compare ? "sale" : "new"}`;
       els.modalPrice.innerHTML = `${formatPrice(activeProduct.price)} ${activeProduct.compare ? `<span class="old">${formatPrice(activeProduct.compare)}</span>` : ""}`;
-      els.modalSizes.innerHTML = activeProduct.sizes.map(size => `<span class="size">${size}</span>`).join("");
+      selectedSize = "";
+      els.modalSizes.innerHTML = activeProduct.sizes.map(size => `<button class="size" data-size="${size}" type="button">${size}</button>`).join("");
       els.modal.classList.add("open");
       document.body.classList.add("locked");
     }
@@ -1907,8 +1949,8 @@
       if(!els.cartDrawer.classList.contains("open")) document.body.classList.remove("locked");
     }
 
-    function addToCart(product){
-      cart.push(product);
+    function addToCart(product, size=""){
+      cart.push({product, size});
       renderCart();
       els.cartDrawer.classList.add("open");
       document.body.classList.add("locked");
@@ -1916,14 +1958,14 @@
 
     function renderCart(){
       els.cartCount.textContent = cart.length;
-      els.cartItems.innerHTML = cart.length ? cart.map((product,index) => `
+      els.cartItems.innerHTML = cart.length ? cart.map((item,index) => `
         <div class="cart-item">
-          <img src="${product.image}" alt="${product.title}">
-          <div><strong>${product.title}</strong><span>${formatPrice(product.price)}</span></div>
-          <button data-remove="${index}" aria-label="Retirer ${product.title}"><i data-lucide="trash-2"></i></button>
+          <img src="${item.product.image}" alt="${item.product.title}">
+          <div><strong>${item.product.title}</strong><span>${item.size ? `Taille : ${item.size} · ` : ""}${formatPrice(item.product.price)}</span></div>
+          <button data-remove="${index}" aria-label="Retirer ${item.product.title}"><i data-lucide="trash-2"></i></button>
         </div>
       `).join("") : `<p class="empty">Votre panier est vide.</p>`;
-      els.cartTotal.textContent = formatPrice(cart.reduce((sum,product) => sum + product.price,0));
+      els.cartTotal.textContent = formatPrice(cart.reduce((sum,item) => sum + item.product.price,0));
       refreshIcons();
     }
 
@@ -1945,15 +1987,18 @@
     document.addEventListener("click", event => {
       const openButton = event.target.closest("[data-open-product]");
       const addButton = event.target.closest("[data-add-product]");
+      const sizeButton = event.target.closest("[data-size]");
       const productCardClick = event.target.closest("[data-product-card]");
       const filterButton = event.target.closest("[data-filter]");
       const removeButton = event.target.closest("[data-remove]");
       if(openButton) openModal(openButton.dataset.openProduct);
+      if(sizeButton) selectSize(sizeButton);
       if(addButton){
         event.preventDefault();
         event.stopPropagation();
         const product = products.find(item => item.id === addButton.dataset.addProduct);
-        if(product) addToCart(product);
+        const scope = addButton.closest(".product-buybox") || document;
+        if(product) addProductToCart(product, getSelectedSize(scope), scope);
       }
       if(productCardClick && !event.target.closest("button") && !event.target.closest("a")){
         window.location.hash = `#/products/${productCardClick.dataset.productCard}`;
@@ -1979,8 +2024,9 @@
     });
 
     els.modalAdd.addEventListener("click", () => {
-      if(activeProduct) addToCart(activeProduct);
-      closeModal();
+      if(activeProduct && addProductToCart(activeProduct, getSelectedSize(els.modal), els.modal)){
+        closeModal();
+      }
     });
     els.search.addEventListener("input", renderProducts);
     document.addEventListener("keydown", event => {

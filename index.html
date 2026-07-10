@@ -1538,6 +1538,16 @@
       {id:"nike-pegasus-premium",title:"Nike Pegasus Premium",vendor:"NIKE",type:"CHAUSSURES RUNNING",tags:"CHAUSSURES,CHAUSSURES RUNNING,HOMME",price:209,compare:null,image:"https://cdn.shopify.com/s/files/1/0685/1369/3970/files/Chaussures_running_Nike_Pegasus_Premium_HQ2592-401_1.webp?v=1783518398",sizes:["38.5","39","40","40.5","41","42"],text:"Une silhouette premium pour une sensation de relance plus dynamique."}
     ];
 
+    const shoeSizes = Array.from({length:21}, (_, index) => {
+      const size = 35 + index * 0.5;
+      return Number.isInteger(size) ? String(size) : String(size);
+    });
+    products.forEach(product => {
+      if(product.type.includes("CHAUSSURES") || product.tags.includes("CHAUSSURES")){
+        product.sizes = [...shoeSizes];
+      }
+    });
+
     const els = {
       app: document.getElementById("app"),
       pageView: document.getElementById("pageView"),

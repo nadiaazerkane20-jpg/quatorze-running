@@ -351,13 +351,15 @@
       display:block;
       position:relative;
       background:var(--mist);
-      aspect-ratio:1/1.12;
+      aspect-ratio:1/1;
       overflow:hidden;
+      padding:14px;
     }
     .product-image img{
       width:100%;
       height:100%;
-      object-fit:cover;
+      object-fit:contain;
+      object-position:center;
       transition:transform .45s ease;
     }
     .product:hover img{transform:scale(1.045)}
@@ -602,11 +604,14 @@
       background:var(--mist);
       border-radius:var(--radius);
       overflow:hidden;
+      padding:clamp(18px,4vw,34px);
     }
     .product-gallery img{
       width:100%;
-      aspect-ratio:1/1.05;
-      object-fit:cover;
+      height:auto;
+      aspect-ratio:1/1;
+      object-fit:contain;
+      object-position:center;
     }
     .product-buybox{
       border:1px solid var(--stone);
@@ -670,6 +675,131 @@
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:18px;
+    }
+    .product-reviews{
+      margin-top:42px;
+      border:1px solid var(--ink);
+      border-radius:var(--radius);
+      background:var(--white);
+      overflow:hidden;
+    }
+    .reviews-head{
+      display:grid;
+      grid-template-columns:.8fr 1.2fr;
+      gap:22px;
+      padding:24px;
+      border-bottom:1px solid var(--stone);
+      background:var(--paper);
+    }
+    .score{
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:8px;
+    }
+    .score strong{
+      font-size:54px;
+      line-height:1;
+      font-weight:900;
+      letter-spacing:0;
+    }
+    .score span{
+      color:var(--muted);
+      font-size:13px;
+      font-weight:800;
+      text-transform:uppercase;
+    }
+    .rating-bars{
+      display:grid;
+      gap:9px;
+      align-content:center;
+    }
+    .rating-row{
+      display:grid;
+      grid-template-columns:54px 1fr 36px;
+      gap:10px;
+      align-items:center;
+      font-size:12px;
+      font-weight:900;
+      color:#4d524c;
+    }
+    .bar{
+      height:8px;
+      border-radius:999px;
+      background:#e7e9e4;
+      overflow:hidden;
+    }
+    .bar span{
+      display:block;
+      height:100%;
+      border-radius:inherit;
+      background:var(--acid);
+    }
+    .reviews-list{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:0;
+    }
+    .product-review{
+      padding:20px;
+      border-right:1px solid var(--stone);
+      min-height:210px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .product-review:last-child{border-right:0}
+    .review-meta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+    .product-review h3{
+      margin:0;
+      font-size:18px;
+      line-height:1.2;
+      letter-spacing:0;
+    }
+    .product-review p{
+      margin:0;
+      color:#4d524c;
+      line-height:1.7;
+      font-size:14px;
+    }
+    .review-verified{
+      margin-top:auto;
+      display:inline-flex;
+      width:max-content;
+      align-items:center;
+      gap:6px;
+      border:1px solid var(--stone);
+      border-radius:999px;
+      padding:7px 10px;
+      color:var(--forest);
+      background:var(--paper);
+      font-size:11px;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+    .reviews-foot{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:18px 20px;
+      border-top:1px solid var(--stone);
+    }
+    .reviews-foot p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+      font-weight:700;
     }
     .legal-layout{
       display:grid;
@@ -810,8 +940,11 @@
       .editorial,.modal-panel{grid-template-columns:1fr}
       .editorial-media{border-left:0;border-top:1px solid rgba(255,255,255,.28)}
       .tiles,.footer-grid{grid-template-columns:1fr}
-      .trust-footer,.route-hero,.product-page-full,.reviews,.details-grid,.legal-layout{grid-template-columns:1fr}
+      .trust-footer,.route-hero,.product-page-full,.reviews,.details-grid,.legal-layout,.reviews-head,.reviews-list{grid-template-columns:1fr}
       .product-gallery,.legal-menu{position:static}
+      .product-review{border-right:0;border-bottom:1px solid var(--stone)}
+      .product-review:last-child{border-bottom:0}
+      .reviews-foot{align-items:flex-start;flex-direction:column}
       .modal-media{min-height:320px}
     }
     @media (max-width:560px){
@@ -828,7 +961,9 @@
       .buy-actions,.benefits{grid-template-columns:1fr}
       .filter-list{display:flex;overflow-x:auto}
       .filter-btn{min-width:max-content}
-      .product-image{aspect-ratio:1/1}
+      .product-image{aspect-ratio:1/1;padding:12px}
+      .product-gallery{padding:16px}
+      .score strong{font-size:44px}
       .modal-info h2{font-size:29px}
     }
   </style>
@@ -1289,10 +1424,6 @@
               <article class="detail-card"><h3>Guide taille</h3><p>Entre deux tailles, privilégiez une demi-pointure au-dessus pour les chaussures de running et trail.</p></article>
               <article class="detail-card"><h3>Expédition</h3><p>Préparation rapide depuis notre entrepôt. Numéro de suivi envoyé après validation de la commande.</p></article>
             </div>
-            <div class="reviews">
-              <article class="review-card"><h3>Avis clients</h3><div class="stars">★ ★ ★ ★ ★</div><p>“Commande reçue rapidement, produit conforme et vraie sensation de boutique spécialisée.”</p></article>
-              <article class="review-card"><h3>Trustpilot</h3><div class="stars">★ ★ ★ ★ ★</div><p>Note moyenne 4,8/5 sur 1 247 avis vérifiés. Service client réactif et conseils précis.</p></article>
-            </div>
           </div>
         </div>
         <div class="section-head" style="margin-top:42px">
@@ -1300,6 +1431,49 @@
           <p>Produits proches par marque ou catégorie.</p>
         </div>
         <div class="products">${related.map(productCard).join("")}</div>
+        <section class="product-reviews" aria-label="Avis clients sur ${product.title}">
+          <div class="reviews-head">
+            <div class="score">
+              <strong>4,8</strong>
+              <div class="stars">★ ★ ★ ★ ★</div>
+              <span>127 avis vérifiés sur ${product.title}</span>
+            </div>
+            <div class="rating-bars" aria-label="Répartition des notes">
+              <div class="rating-row"><span>5 étoiles</span><div class="bar"><span style="width:86%"></span></div><span>86%</span></div>
+              <div class="rating-row"><span>4 étoiles</span><div class="bar"><span style="width:10%"></span></div><span>10%</span></div>
+              <div class="rating-row"><span>3 étoiles</span><div class="bar"><span style="width:3%"></span></div><span>3%</span></div>
+              <div class="rating-row"><span>2 étoiles</span><div class="bar"><span style="width:1%"></span></div><span>1%</span></div>
+              <div class="rating-row"><span>1 étoile</span><div class="bar"><span style="width:0%"></span></div><span>0%</span></div>
+            </div>
+          </div>
+          <div class="reviews-list">
+            <article class="product-review">
+              <div class="review-meta"><span>Camille D.</span><span>Il y a 3 jours</span></div>
+              <div class="stars">★ ★ ★ ★ ★</div>
+              <h3>Produit conforme et livraison rapide</h3>
+              <p>Très bonne expérience, le produit correspond bien à la fiche. La taille est juste et l'expédition a été rapide.</p>
+              <span class="review-verified"><i data-lucide="badge-check"></i> Achat vérifié</span>
+            </article>
+            <article class="product-review">
+              <div class="review-meta"><span>Mathieu R.</span><span>Il y a 1 semaine</span></div>
+              <div class="stars">★ ★ ★ ★ ★</div>
+              <h3>Parfait pour mes entraînements</h3>
+              <p>Utilisé sur plusieurs sorties, très bon confort et sensation sérieuse. Le site donne assez d'infos pour choisir.</p>
+              <span class="review-verified"><i data-lucide="badge-check"></i> Achat vérifié</span>
+            </article>
+            <article class="product-review">
+              <div class="review-meta"><span>Sofia L.</span><span>Il y a 2 semaines</span></div>
+              <div class="stars">★ ★ ★ ★ ☆</div>
+              <h3>Bonne qualité, service propre</h3>
+              <p>Commande simple, suivi clair et emballage nickel. J'aurais aimé une couleur en plus, mais le produit est top.</p>
+              <span class="review-verified"><i data-lucide="badge-check"></i> Achat vérifié</span>
+            </article>
+          </div>
+          <div class="reviews-foot">
+            <p>Avis collectés après achat. Les notes affichées sont intégrées à la maquette pour reproduire une boutique prête à vendre.</p>
+            <button class="btn"><i data-lucide="message-square-plus"></i> Écrire un avis</button>
+          </div>
+        </section>
       `;
       window.scrollTo({top:0,behavior:"smooth"});
       refreshIcons();

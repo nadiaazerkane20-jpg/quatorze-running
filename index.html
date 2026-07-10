@@ -273,14 +273,27 @@
       position:relative;
       min-height:650px;
       border-left:1px solid var(--stone);
-      background:
-        linear-gradient(180deg,rgba(17,18,19,.05),rgba(17,18,19,.24)),
-        url("https://cdn.shopify.com/s/files/1/0685/1369/3970/files/Chaussures_running_Nike_Pegasus_42_IB1881_2.webp?v=1783438416") center/cover;
+      background:#f6f7f4;
       display:flex;
       align-items:flex-end;
       padding:clamp(18px,3vw,34px);
+      overflow:hidden;
+    }
+    .hero-shoe{
+      position:absolute;
+      inset:42px 34px 160px;
+      display:grid;
+      place-items:center;
+    }
+    .hero-shoe img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      object-position:center;
     }
     .hero-product{
+      position:relative;
+      z-index:2;
       width:min(450px,100%);
       background:rgba(255,255,255,.9);
       border:1px solid rgba(17,18,19,.18);
@@ -493,8 +506,18 @@
     .editorial-copy p{color:#dfe8df;line-height:1.75;max-width:580px}
     .editorial-media{
       min-height:420px;
-      background:url("https://cdn.shopify.com/s/files/1/0685/1369/3970/files/Chaussures_trail_Salomon_Ultra_Glide_4_L45396000.webp?v=1783609415") center/cover;
+      background:#f6f7f4;
       border-left:1px solid rgba(255,255,255,.28);
+      display:grid;
+      place-items:center;
+      padding:clamp(22px,4vw,44px);
+      overflow:hidden;
+    }
+    .editorial-media img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      object-position:center;
     }
     .lookbook{
       padding:0 clamp(16px,4vw,48px) 70px;
@@ -511,9 +534,22 @@
       padding:18px;
       display:flex;
       align-items:flex-end;
-      background:var(--mist);
+      background:#f6f7f4;
       position:relative;
       overflow:hidden;
+    }
+    .tile-img{
+      position:absolute;
+      inset:18px 18px 76px;
+      z-index:0;
+      display:grid;
+      place-items:center;
+    }
+    .tile-img img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      object-position:center;
     }
     .tile:before{
       content:"";
@@ -522,9 +558,6 @@
       background:linear-gradient(180deg,rgba(17,18,19,0),rgba(17,18,19,.56));
       z-index:1;
     }
-    .tile.one{background:url("https://cdn.shopify.com/s/files/1/0685/1369/3970/files/Montre_Connectee_Garmin_Venu_4_45mm_4.webp?v=1783607449") center/cover}
-    .tile.two{background:url("https://cdn.shopify.com/s/files/1/0685/1369/3970/files/Short_Nike_Aeroswift_4in_FN3352-418_PHSYM001-2000_1_a4b61b25-5300-468e-a6fd-2fb82be3a4a0.webp?v=1783521104") center/cover}
-    .tile.three{background:url("https://cdn.shopify.com/s/files/1/0685/1369/3970/files/Salomon_Soft_Flask_Speed_Clear_Blue_LD0010800.webp?v=1783605947") center/cover}
     .tile-content{position:relative;z-index:2;color:var(--white)}
     .tile-content h3{margin:0 0 8px;font-size:28px;text-transform:uppercase;letter-spacing:0}
     .tile-content p{margin:0;color:#edf1ea;font-weight:700}
@@ -1277,6 +1310,9 @@
         </div>
       </div>
       <div class="hero-media">
+        <div class="hero-shoe">
+          <img src="https://cdn.shopify.com/s/files/1/0685/1369/3970/files/Chaussures_running_Nike_Pegasus_42_IB1881_2.webp?v=1783438416" alt="Nike Pegasus 42">
+        </div>
         <article class="hero-product">
           <div class="meta">
             <span class="badge new">Nouveauté</span>
@@ -1335,7 +1371,9 @@
         <p>Les produits trail du catalogue sont mis en avant avec une direction plus technique : terrains variés, hydratation, maintien et protection. L'esprit reste boutique spécialisée, net et orienté performance.</p>
         <button class="btn" data-filter="CHAUSSURES TRAIL"><i data-lucide="mountain"></i> Explorer le trail</button>
       </div>
-      <div class="editorial-media" aria-label="Chaussure de trail Salomon"></div>
+      <div class="editorial-media" aria-label="Chaussure de trail Salomon">
+        <img src="https://cdn.shopify.com/s/files/1/0685/1369/3970/files/Chaussures_trail_Salomon_Ultra_Glide_4_L45396000.webp?v=1783609415" alt="Salomon Ultra Glide 4">
+      </div>
     </section>
 
     <section class="lookbook home-section" id="lookbook">
@@ -1345,12 +1383,15 @@
       </div>
       <div class="tiles">
         <article class="tile one">
+          <div class="tile-img"><img src="https://cdn.shopify.com/s/files/1/0685/1369/3970/files/Montre_Connectee_Garmin_Venu_4_45mm_4.webp?v=1783607449" alt="Montre GPS Garmin"></div>
           <div class="tile-content"><h3>GPS</h3><p>Montres et suivi d'entraînement</p></div>
         </article>
         <article class="tile two">
+          <div class="tile-img"><img src="https://cdn.shopify.com/s/files/1/0685/1369/3970/files/Short_Nike_Aeroswift_4in_FN3352-418_PHSYM001-2000_1_a4b61b25-5300-468e-a6fd-2fb82be3a4a0.webp?v=1783521104" alt="Short Nike Aeroswift"></div>
           <div class="tile-content"><h3>Textile</h3><p>Tenues respirantes pour la vitesse</p></div>
         </article>
         <article class="tile three">
+          <div class="tile-img"><img src="https://cdn.shopify.com/s/files/1/0685/1369/3970/files/Salomon_Soft_Flask_Speed_Clear_Blue_LD0010800.webp?v=1783605947" alt="Flasque Salomon"></div>
           <div class="tile-content"><h3>Hydratation</h3><p>Accessoires pour sorties longues</p></div>
         </article>
       </div>

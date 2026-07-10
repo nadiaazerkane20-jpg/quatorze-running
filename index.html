@@ -1035,9 +1035,37 @@
       cursor:pointer;
     }
     .size.active{background:var(--ink);border-color:var(--ink);color:var(--white)}
+    .variant-field{margin:18px 0 12px}
+    .variant-field label{
+      display:block;
+      margin-bottom:8px;
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+    .variant-select{
+      width:100%;
+      min-height:48px;
+      border:1px solid var(--stone);
+      border-radius:8px;
+      background:var(--white);
+      color:var(--ink);
+      padding:0 42px 0 14px;
+      font:inherit;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+      appearance:none;
+      background-image:linear-gradient(45deg, transparent 50%, var(--ink) 50%),linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+      background-position:calc(100% - 19px) 21px,calc(100% - 14px) 21px;
+      background-size:5px 5px,5px 5px;
+      background-repeat:no-repeat;
+    }
+    .variant-select:focus{outline:2px solid rgba(16,24,32,.16);outline-offset:2px}
     .variant-error{
       display:none;
-      margin:-8px 0 14px;
+      margin:-4px 0 14px;
       color:var(--red);
       font-size:12px;
       font-weight:900;
@@ -1651,17 +1679,23 @@
       return product.sizes && product.sizes.length > 1;
     }
 
-    function getSelectedSize(scope=document){
-      return scope.querySelector(".size.active")?.dataset.size || "";
+    function variantDropdown(product, context="page"){
+      const inputId = `variant-${context}-${product.id}`;
+      const hasMultipleSizes = needsSize(product);
+      const options = product.sizes.map(size => `<option value="${size}" ${!hasMultipleSizes ? "selected" : ""}>${size}</option>`).join("");
+      return `
+        <div class="variant-field">
+          <label for="${inputId}">Taille</label>
+          <select class="variant-select" id="${inputId}" data-size-select>
+            ${hasMultipleSizes ? `<option value="">Choisir une taille</option>` : ""}
+            ${options}
+          </select>
+        </div>
+      `;
     }
 
-    function selectSize(button){
-      const group = button.closest(".sizes");
-      group.querySelectorAll(".size").forEach(size => size.classList.remove("active"));
-      button.classList.add("active");
-      selectedSize = button.dataset.size;
-      const error = group.parentElement.querySelector("[data-variant-error]");
-      if(error) error.classList.remove("show");
+    function getSelectedSize(scope=document){
+      return scope.querySelector("[data-size-select]")?.value || "";
     }
 
     function addProductToCart(product, size, scope=document){
@@ -1792,7 +1826,7 @@
               <span class="vendor">${product.vendor} · ${product.type}</span>
               <p class="hero-text" style="margin-top:16px">${product.text}</p>
               <div class="price" style="font-size:28px;margin-top:18px">${formatPrice(product.price)} ${product.compare ? `<span class="old">${formatPrice(product.compare)}</span>` : ""}</div>
-              <div class="sizes" aria-label="Tailles disponibles">${product.sizes.map(size => `<button class="size" data-size="${size}" type="button">${size}</button>`).join("")}</div>
+              ${variantDropdown(product, "page")}
               <p class="variant-error" data-variant-error>Choisis une taille avant d'ajouter au panier.</p>
               <div class="buy-actions">
                 <button class="btn primary" data-add-product="${product.id}"><i data-lucide="shopping-bag"></i> Ajouter au panier</button>
@@ -1939,7 +1973,7 @@
       els.modalBadge.className = `badge ${activeProduct.compare ? "sale" : "new"}`;
       els.modalPrice.innerHTML = `${formatPrice(activeProduct.price)} ${activeProduct.compare ? `<span class="old">${formatPrice(activeProduct.compare)}</span>` : ""}`;
       selectedSize = "";
-      els.modalSizes.innerHTML = activeProduct.sizes.map(size => `<button class="size" data-size="${size}" type="button">${size}</button>`).join("");
+      els.modalSizes.innerHTML = variantDropdown(activeProduct, "modal");
       els.modal.classList.add("open");
       document.body.classList.add("locked");
     }
@@ -1987,12 +2021,10 @@
     document.addEventListener("click", event => {
       const openButton = event.target.closest("[data-open-product]");
       const addButton = event.target.closest("[data-add-product]");
-      const sizeButton = event.target.closest("[data-size]");
       const productCardClick = event.target.closest("[data-product-card]");
       const filterButton = event.target.closest("[data-filter]");
       const removeButton = event.target.closest("[data-remove]");
       if(openButton) openModal(openButton.dataset.openProduct);
-      if(sizeButton) selectSize(sizeButton);
       if(addButton){
         event.preventDefault();
         event.stopPropagation();
@@ -2021,6 +2053,14 @@
         window.location.hash = "#/";
         setTimeout(()=>{document.getElementById("shop").scrollIntoView({behavior:"smooth"});els.search.focus()},150);
       }
+    });
+
+    document.addEventListener("change", event => {
+      const select = event.target.closest("[data-size-select]");
+      if(!select) return;
+      selectedSize = select.value;
+      const error = select.closest(".product-buybox, .modal-info")?.querySelector("[data-variant-error]");
+      if(error) error.classList.remove("show");
     });
 
     els.modalAdd.addEventListener("click", () => {
